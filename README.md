@@ -25,4 +25,4 @@ After installation, you need to add the component to your Home Assistant configu
 
 ```yaml
 sensor:
-  - platform: slovenian_energy_tariff
+  - platform: elektro_network_tariff
