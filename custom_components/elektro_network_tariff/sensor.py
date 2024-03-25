@@ -1,10 +1,18 @@
 import logging
-from datetime import timedelta
 from homeassistant.helpers.entity import Entity
-from homeassistant.util import dt
+from homeassistant.util import dt as dt_util
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+import voluptuous as vol
 from .elektro_network_fee import calculate_tariff
 
 _LOGGER = logging.getLogger(__name__)
+
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({})
+
+async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+    """Set up the Elektro Network Tariff Sensor."""
+    async_add_entities([ElektroNetworkTariffSensor()])
+
 
 class ElektroNetworkTariffSensor(Entity):
     """Representation of an Elektro Network Tariff Sensor."""
@@ -26,5 +34,5 @@ class ElektroNetworkTariffSensor(Entity):
 
     def update(self):
         """Fetch new state data for the sensor."""
-        current_datetime = dt.now()
+        current_datetime = dt_util.now()
         self._state = calculate_tariff(current_datetime)
