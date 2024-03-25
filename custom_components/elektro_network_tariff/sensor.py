@@ -2,7 +2,7 @@ import logging
 from datetime import timedelta
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import dt
-from .network_fee_api import calculate_tariff
+from .elektro_network_fee import calculate_tariff
 
 _LOGGER = logging.getLogger(__name__)
 
