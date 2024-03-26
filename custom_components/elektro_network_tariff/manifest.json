@@ -4,7 +4,7 @@
   "documentation": "https://github.com/frlequ/elektro_network_tariff",
   "dependencies": [],
   "codeowners": ["@frlequ"],
-  "version": "0.1.0",
+  "version": "0.1.1",
   "requirements": [],
   "integration_type": "entity",
   "iot_class": "local_polling"

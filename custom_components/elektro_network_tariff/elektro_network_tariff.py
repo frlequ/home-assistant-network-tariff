@@ -61,7 +61,8 @@ def is_weekend_or_holiday(date):
     return False
 
 
-def calculate_tariff(date):
+def calculate_tariff():
+    date = datetime.datetime.now()
     month = date.month
     hour = date.hour
     is_high_season = month in [11, 12, 1, 2]
@@ -88,7 +89,7 @@ def calculate_tariff(date):
                 return low_season_tariff[0]
             else:
                 return high_season_tariff[1] if is_high_season else low_season_tariff[1]
-
+    
     # Default tariff if none of the conditions above are met
     return 0
 
