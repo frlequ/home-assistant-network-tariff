@@ -1,13 +1,14 @@
 import logging
 from datetime import timedelta
 from homeassistant.helpers.entity import Entity
-from homeassistant.util import dt
 from homeassistant.components.sensor import PLATFORM_SCHEMA
-from .elektro_network_fee import calculate_tariff
+from .elektro_network_tariff import calculate_tariff
 
 _LOGGER = logging.getLogger(__name__)
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({})
+
+SCAN_INTERVAL = timedelta(seconds=30)  # Adjust the interval as needed
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     """Set up the Elektro Network Tariff Sensor."""
@@ -31,7 +32,18 @@ class ElektroNetworkTariffSensor(Entity):
         """Return the state of the sensor."""
         return self._state
 
+    @property
+    def state_attributes(self):
+        """Return the state attributes."""
+        return {
+            "state_class": "measurement"
+        }
+        
+    @property
+    def icon(self):
+        """Return the icon to use in the frontend."""
+        return "mdi:transmission-tower"
+
     def update(self):
         """Fetch new state data for the sensor."""
-        current_datetime = dt.now()
-        self._state = calculate_tariff(current_datetime)
+        self._state = calculate_tariff()
