@@ -44,6 +44,7 @@ def is_weekend_or_holiday(date):
         (10, 31),  # National Reformation Day
         (11, 1),   # All Saints' Day
         (12, 25),  # Christmas
+        (12, 26),  # Independence and Unity Day
     ]
     
     # Calculate Easter Saturday and Easter Monday for the year of the given date
