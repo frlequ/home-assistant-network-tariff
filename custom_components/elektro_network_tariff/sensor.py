@@ -20,6 +20,7 @@ class ElektroNetworkTariffSensor(Entity):
     def __init__(self):
         """Initialize the sensor."""
         self._state = None
+        self._blocks = None
         self.update()
 
     @property
@@ -35,10 +36,13 @@ class ElektroNetworkTariffSensor(Entity):
     @property
     def state_attributes(self):
         """Return the state attributes."""
+        # Convert the blocks list into a comma-separated string
+        blocks_str = ','.join(map(str, self._blocks)) if self._blocks else ''
         return {
-            "state_class": "measurement"
+            "state_class": "measurement",
+            "blocks": blocks_str  # Add the blocks string to the attributes
         }
-        
+
     @property
     def icon(self):
         """Return the icon to use in the frontend."""
@@ -46,4 +50,4 @@ class ElektroNetworkTariffSensor(Entity):
 
     def update(self):
         """Fetch new state data for the sensor."""
-        self._state = calculate_tariff()
+        self._state, self._blocks = calculate_tariff()  # Update both state and blocks
