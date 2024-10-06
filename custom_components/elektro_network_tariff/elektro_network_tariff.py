@@ -81,17 +81,24 @@ def calculate_tariff():
         ((22, 23), (3, 4), (5, 4)),  # Late evening
     ]
 
-    for time_range, high_season_tariff, low_season_tariff in tariffs:
-        start, end = time_range
-        if start <= hour <= end:
-            if is_high_season and not weekend_or_holiday:
-                return high_season_tariff[0]
-            elif not is_high_season and weekend_or_holiday:
-                return low_season_tariff[0]
-            else:
-                return high_season_tariff[1] if is_high_season else low_season_tariff[1]
-    
-    # Default tariff if none of the conditions above are met
-    return 0
+    # Initialize an array to hold the tariffs for each hour of the day
+    blocks = []
 
+    for hour in range(24):  # For each hour from 0 to 23
+        for time_range, high_season_tariff, low_season_tariff in tariffs:
+            start, end = time_range
+            if start <= hour <= end:
+                if is_high_season and not weekend_or_holiday:
+                    blocks.append(high_season_tariff[0])
+                elif not is_high_season and weekend_or_holiday:
+                    blocks.append(low_season_tariff[0])
+                else:
+                    blocks.append(high_season_tariff[1] if is_high_season else low_season_tariff[1])
+                break
+        else:
+            # Default tariff if none of the conditions above are met
+            blocks.append(0)
 
+    # Now return the current tariff and the blocks
+    current_tariff = blocks[date.hour]  # Get the tariff for the current hour
+    return current_tariff, blocks  # Return both the current tariff and the blocks
