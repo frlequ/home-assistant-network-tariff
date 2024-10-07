@@ -26,3 +26,10 @@ After installation, you need to add the component to your Home Assistant configu
 ```yaml
 sensor:
   - platform: elektro_network_tariff
+```
+
+## Report any issues
+
+Thanks and consider giving me a 🌟 star
+
+<a href="https://www.buymeacoffee.com/frlequ" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
