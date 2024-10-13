@@ -5,8 +5,8 @@
   "dependencies": [],
   "documentation": "https://github.com/frlequ/elektro_network_tariff",
   "integration_type": "entity",
-  "issue_tracker": "https://github.com/frlequ/elektro_network_tariff/issues",
   "iot_class": "local_polling",
   "requirements": [],
-  "version": "0.1.1"
+  "version": "0.1.1",
+  "issue_tracker": "https://github.com/frlequ/elektro_network_tariff/issues"
 }
