@@ -34,6 +34,16 @@ sensor:
   - platform: elektro_network_tariff
 ```
 
+Or if you want a custom name and entity_id use this:
+
+```yaml
+sensor:
+  - platform: elektro_network_tariff
+    name: "Custom Tariff Sensor"
+    entity_id: "sensor.custom_tariff_sensor"
+```
+
+
 ## Report any issues
 
 Thanks and consider giving me a 🌟 star
