@@ -1,11 +1,12 @@
 {
   "domain": "elektro_network_tariff",
   "name": "Elektro Network Tariff",
-  "documentation": "https://github.com/frlequ/elektro_network_tariff",
-  "dependencies": [],
   "codeowners": ["@frlequ"],
-  "version": "0.1.1",
-  "requirements": [],
+  "dependencies": [],
+  "documentation": "https://github.com/frlequ/elektro_network_tariff",
   "integration_type": "entity",
-  "iot_class": "local_polling"
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/frlequ/elektro_network_tariff/issues",
+  "requirements": [],
+  "version": "0.1.1"
 }
