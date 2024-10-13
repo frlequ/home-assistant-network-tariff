@@ -10,6 +10,12 @@ This custom component for Home Assistant calculates the current network fee tari
 
 ## Installation
 
+**Method 1 _(easiest)_:**
+
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=frlequ&repository=home-assistant-network-tariff&category=integration)
+
+
+**Method 2:**
 1. **Download the Custom Component**
    - Download the files from the repository.
    
