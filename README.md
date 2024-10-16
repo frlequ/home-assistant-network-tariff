@@ -27,21 +27,19 @@ This custom component for Home Assistant calculates the current network fee tari
 
 ## Configuration
 
-After installation, you need to add the component to your Home Assistant configuration. Edit your `configuration.yaml` file and add the following configuration:
+After installation, go to Settings -> Add Integration and search for `Elektro Network Tariff`
 
-```yaml
-sensor:
-  - platform: elektro_network_tariff
-```
 
-Or if you want a custom name and entity_id use this:
+## Upgrading
 
-```yaml
-sensor:
-  - platform: elektro_network_tariff
-    name: "Custom Tariff Sensor"
-    entity_id: "sensor.custom_tariff_sensor"
-```
+> [!IMPORTANT]
+> If you are upgrading from an older version, please **remove** platform sensor from `configuration.yaml`, you don't need it anymore.
+>
+>```yaml
+>sensor:
+>  - platform: elektro_network_tariff
+>```
+
 
 
 ## Report any issues

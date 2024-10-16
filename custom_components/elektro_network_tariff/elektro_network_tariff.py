@@ -102,3 +102,4 @@ def calculate_tariff():
     # Now return the current tariff and the blocks
     current_tariff = blocks[date.hour]  # Get the tariff for the current hour
     return current_tariff, blocks  # Return both the current tariff and the blocks
+
