@@ -20,7 +20,7 @@ This custom component for Home Assistant calculates the current network fee tari
    - Download the files from the repository.
    
 2. **Copy to Your Custom Components Directory**
-   - Copy the downloaded files into the `custom_components/elektro_network_tariff` directory in your Home Assistant configuration directory.
+   - Copy the downloaded folder `elektro_network_tariff` into the `custom_components/elektro_network_tariff` directory in your Home Assistant configuration directory.
 
 3. **Restart Home Assistant**
    - Restart your Home Assistant instance to load the new component.
@@ -28,7 +28,6 @@ This custom component for Home Assistant calculates the current network fee tari
 ## Configuration
 
 After installation, go to Settings -> Add Integration and search for `Elektro Network Tariff`
-
 
 ## Upgrading
 
@@ -39,6 +38,15 @@ After installation, go to Settings -> Add Integration and search for `Elektro Ne
 >sensor:
 >  - platform: elektro_network_tariff
 >```
+
+## Custom Card
+
+> [!TIP]
+> You can use Network Tariff Card **[Network Tariff Card](https://github.com/frlequ/network-tariff-card)**. The card is designed to work with this component.
+> ![Network Tariff Card](https://github.com/frlequ/network-tariff-card/blob/main/assets/network-tariff-card.jpg)
+
+
+
 
 
 
