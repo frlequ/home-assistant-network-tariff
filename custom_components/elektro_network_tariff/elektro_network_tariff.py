@@ -106,6 +106,7 @@ def calculate_tariff():
     return {
         "current_tariff": current_tariff,     # Current hour's tariff
         "is_holiday": is_holiday,             # Is today a holiday or weekend
+        "is_high_season": is_high_season,     # Is high tariff season
         "next_tariff_block": next_tariff_block,  # Tariff for the next hour
         "is_next_block_higher": is_next_block_higher,  # Is the next block higher
         "blocks": blocks                      # Tariff blocks for the entire day

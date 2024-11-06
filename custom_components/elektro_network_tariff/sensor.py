@@ -41,6 +41,7 @@ class ElektroNetworkTariffSensor(SensorEntity):
             "state_class": "measurement",
             "blocks": ','.join(map(str, self._blocks)) if self._blocks else '',
             "is_holiday": self._is_holiday,
+            "is_high_season": self.is_high_season,
             "next_tariff_block": self._next_tariff_block,
             "is_next_block_higher": self._is_next_block_higher
         }
@@ -58,6 +59,7 @@ class ElektroNetworkTariffSensor(SensorEntity):
             self._state = tariff_data["current_tariff"]
             self._blocks = tariff_data["blocks"]
             self._is_holiday = tariff_data["is_holiday"]
+            self.is_high_season = tariff_data["is_high_season"]
             self._next_tariff_block = tariff_data["next_tariff_block"]
             self._is_next_block_higher = tariff_data["is_next_block_higher"]
         except Exception as e:
