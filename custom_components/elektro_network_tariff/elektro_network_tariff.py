@@ -51,25 +51,21 @@ def is_weekend_or_holiday(date):
     easter_saturday, easter_monday = get_easter_saturday_monday(date.year)
     
     # Add Easter Saturday and Easter Monday to the list of public holidays
-    public_holidays.append((easter_saturday.month, easter_saturday.day))
-    public_holidays.append((easter_monday.month, easter_monday.day))
+    public_holidays.extend([(easter_saturday.month, easter_saturday.day), 
+                            (easter_monday.month, easter_monday.day)])
     
     # Check if the date matches any public holiday
-    if (date.month, date.day) in public_holidays:
-        print("hollyday")
-        return True
-
-    return False
-
+    return (date.month, date.day) in public_holidays
 
 def calculate_tariff():
+    """Calculate the current tariff and additional attributes for electricity tariff blocks."""
     date = datetime.datetime.now()
     month = date.month
     hour = date.hour
     is_high_season = month in [11, 12, 1, 2]
-    weekend_or_holiday = is_weekend_or_holiday(date)
+    is_holiday = is_weekend_or_holiday(date)
 
-    # Define tariff rates in a more structured form
+    # Define tariff rates in a structured form
     # (hour_range, high_season_rate, low_season_rate)
     tariffs = [
         ((0, 5), (3, 4), (5, 4)),  # Early morning
@@ -88,9 +84,9 @@ def calculate_tariff():
         for time_range, high_season_tariff, low_season_tariff in tariffs:
             start, end = time_range
             if start <= hour <= end:
-                if is_high_season and not weekend_or_holiday:
+                if is_high_season and not is_holiday:
                     blocks.append(high_season_tariff[0])
-                elif not is_high_season and weekend_or_holiday:
+                elif not is_high_season and is_holiday:
                     blocks.append(low_season_tariff[0])
                 else:
                     blocks.append(high_season_tariff[1] if is_high_season else low_season_tariff[1])
@@ -99,7 +95,19 @@ def calculate_tariff():
             # Default tariff if none of the conditions above are met
             blocks.append(0)
 
-    # Now return the current tariff and the blocks
-    current_tariff = blocks[date.hour]  # Get the tariff for the current hour
-    return current_tariff, blocks  # Return both the current tariff and the blocks
+    # Get the tariff for the current hour
+    current_tariff = blocks[date.hour]
+    # Get the tariff block for the next hour
+    next_tariff_block = blocks[(date.hour + 1) % 24]
+    # Determine if the next block is higher than the current
+    is_next_block_higher = next_tariff_block > current_tariff
 
+    # Return a dictionary with the required attributes
+    return {
+        "current_tariff": current_tariff,     # Current hour's tariff
+        "is_holiday": is_holiday,             # Is today a holiday or weekend
+        "is_high_season": is_high_season,     # Is high tariff season
+        "next_tariff_block": next_tariff_block,  # Tariff for the next hour
+        "is_next_block_higher": is_next_block_higher,  # Is the next block higher
+        "blocks": blocks                      # Tariff blocks for the entire day
+    }
