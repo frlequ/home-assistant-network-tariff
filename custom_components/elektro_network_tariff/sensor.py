@@ -41,10 +41,10 @@ class ElektroNetworkTariffSensor(SensorEntity):
         return {
             "state_class": "measurement",
             "blocks": ','.join(map(str, self._blocks)) if self._blocks else '',
-            "is_holiday": self._is_holiday,
-            "is_high_season": self._is_high_season,
+            "holiday": self._is_holiday,
+            "high_season": self._is_high_season,
             "next_tariff_block": self._next_tariff_block,
-            "is_next_block_higher": self._is_next_block_higher
+            "next_block_higher": self._is_next_block_higher
         }
 
     @property
