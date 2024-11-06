@@ -25,6 +25,9 @@ class ElektroNetworkTariffSensor(SensorEntity):
         self._attr_unique_id = entity_id  # Set a unique ID for the entity
         self._state = None
         self._blocks = None
+        self._is_holiday = None
+        self._next_tariff_block = None
+        self._is_next_block_higher = None
 
     @property
     def state(self):
@@ -36,7 +39,10 @@ class ElektroNetworkTariffSensor(SensorEntity):
         """Return the state attributes."""
         return {
             "state_class": "measurement",
-            "blocks": ','.join(map(str, self._blocks)) if self._blocks else ''
+            "blocks": ','.join(map(str, self._blocks)) if self._blocks else '',
+            "is_holiday": self._is_holiday,
+            "next_tariff_block": self._next_tariff_block,
+            "is_next_block_higher": self._is_next_block_higher
         }
 
     @property
@@ -47,6 +53,12 @@ class ElektroNetworkTariffSensor(SensorEntity):
     async def async_update(self):
         """Fetch new state data for the sensor asynchronously."""
         try:
-            self._state, self._blocks = calculate_tariff()  # Fetch data asynchronously if needed
+            # Fetch all attributes from the calculate_tariff function
+            tariff_data = calculate_tariff()
+            self._state = tariff_data["current_tariff"]
+            self._blocks = tariff_data["blocks"]
+            self._is_holiday = tariff_data["is_holiday"]
+            self._next_tariff_block = tariff_data["next_tariff_block"]
+            self._is_next_block_higher = tariff_data["is_next_block_higher"]
         except Exception as e:
             _LOGGER.error(f"Error updating Elektro Network Tariff Sensor: {e}")
