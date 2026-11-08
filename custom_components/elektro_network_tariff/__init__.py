@@ -22,6 +22,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Unload an Elektro Network Tariff config entry."""
-    await hass.config_entries.async_forward_entry_unload(entry, "sensor")
-    hass.data[DOMAIN].pop(entry.entry_id)
-    return True
+    unload_ok = await hass.config_entries.async_unload_platforms(entry, ["sensor"])
+    if unload_ok:
+        hass.data[DOMAIN].pop(entry.entry_id)
+    return unload_ok
