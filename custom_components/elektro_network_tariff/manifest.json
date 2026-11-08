@@ -4,9 +4,9 @@
   "codeowners": ["@frlequ"],
   "config_flow": true,
   "dependencies": [],
-  "documentation": "https://github.com/frlequ/elektro_network_tariff",
-  "iot_class": "local_polling",
-  "issue_tracker": "https://github.com/frlequ/elektro_network_tariff/issues",
-  "requirements": ["requests>=2.25.1"],
+  "documentation": "https://github.com/frlequ/home-assistant-network-tariff",
+  "iot_class": "calculated",
+  "issue_tracker": "https://github.com/frlequ/home-assistant-network-tariff/issues",
+  "requirements": [],
   "version": "0.2.0"
 }
