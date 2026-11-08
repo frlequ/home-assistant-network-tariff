@@ -1,14 +1,13 @@
 import logging
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
-from datetime import timedelta
+from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers.event import async_track_time_change
+from homeassistant.util import dt as dt_util
 from .elektro_network_tariff import calculate_tariff
 from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
-
-SCAN_INTERVAL = timedelta(seconds=5)
 
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, async_add_entities):
     """Set up the Elektro Network Tariff Sensor from a config entry."""
@@ -18,6 +17,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
 
 class ElektroNetworkTariffSensor(SensorEntity):
     """Representation of an Elektro Network Tariff Sensor."""
+
+    # Updated on every full hour instead of being polled
+    _attr_should_poll = False
 
     def __init__(self, name, entity_id):
         """Initialize the sensor."""
@@ -31,7 +33,7 @@ class ElektroNetworkTariffSensor(SensorEntity):
         self._is_next_block_higher = None
 
     @property
-    def state(self):
+    def native_value(self):
         """Return the state of the sensor."""
         return self._state
 
@@ -52,11 +54,32 @@ class ElektroNetworkTariffSensor(SensorEntity):
         """Return the icon to use in the frontend."""
         return "mdi:transmission-tower"
 
+    async def async_added_to_hass(self):
+        """Calculate the state now and refresh it on every full hour.
+
+        The schedule follows the clock rather than the start time, so starting
+        at 3:45 gives the correct block immediately and the next update at 4:00.
+        """
+        self.async_on_remove(
+            async_track_time_change(self.hass, self._handle_full_hour, minute=0, second=0)
+        )
+        self._refresh(dt_util.now())
+
+    @callback
+    def _handle_full_hour(self, now):
+        """Refresh the sensor when a new hour starts."""
+        self._refresh(now)
+        self.async_write_ha_state()
+
     async def async_update(self):
-        """Fetch new state data for the sensor asynchronously."""
+        """Refresh the sensor when an update is requested manually."""
+        self._refresh(dt_util.now())
+
+    def _refresh(self, now):
+        """Calculate the tariff data for the given local time."""
         try:
             # Fetch all attributes from the calculate_tariff function
-            tariff_data = calculate_tariff()
+            tariff_data = calculate_tariff(now)
             self._state = tariff_data["current_tariff"]
             self._blocks = tariff_data["blocks"]
             self._is_holiday = tariff_data["is_holiday"]

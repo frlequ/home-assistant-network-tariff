@@ -7,6 +7,7 @@ This custom component for Home Assistant calculates the current network fee tari
 - Calculates current energy tariff based on date and time.
 - Automatically identifies weekends and Slovenian public holidays.
 - Adjusts tariffs for high and low seasons.
+- Switches to the new 2027 time blocks automatically on 1 January 2027. The current blocks apply until then.
 
 ## Installation
 

@@ -1,5 +1,25 @@
 import datetime
 
+# The block schedule published for 2027 applies from this date onwards.
+SCHEDULE_2027_START = datetime.date(2027, 1, 1)
+
+# Block for each hour of the day (one digit per hour, starting at 00:00).
+# Keys are (is_high_season, is_non_working_day).
+SCHEDULE_UNTIL_2026 = {
+    (True, False): "333333211111112211112233",
+    (True, True): "444444322222223322223344",
+    (False, False): "444444322222223322223344",
+    (False, True): "555555433333334433334455",
+}
+
+# Source: Agencija za energijo, act of 29 September 2025, Annex 2, chapter 3.
+SCHEDULE_FROM_2027 = {
+    (True, False): "333333111111222221112233",
+    (True, True): "444444333333444443333344",
+    (False, False): "555555333333444443333355",
+    (False, True): "555555444444555554444455",
+}
+
 def calculate_easter(year):
     """Calculate Easter Sunday for a given year."""
     a = year % 19
@@ -57,56 +77,43 @@ def is_weekend_or_holiday(date):
     # Check if the date matches any public holiday
     return (date.month, date.day) in public_holidays
 
-def calculate_tariff():
-    """Calculate the current tariff and additional attributes for electricity tariff blocks."""
-    date = datetime.datetime.now()
-    month = date.month
-    hour = date.hour
-    is_high_season = month in [11, 12, 1, 2]
-    is_holiday = is_weekend_or_holiday(date)
+def is_high_season_month(month):
+    """Check if the month is in the high season (November to February)."""
+    return month in [11, 12, 1, 2]
 
-    # Define tariff rates in a structured form
-    # (hour_range, high_season_rate, low_season_rate)
-    tariffs = [
-        ((0, 5), (3, 4), (5, 4)),  # Early morning
-        ((6, 6), (2, 3), (4, 3)),  # 6 AM
-        ((7, 13), (1, 2), (3, 2)),  # Morning to early afternoon
-        ((14, 15), (2, 3), (4, 3)),  # Early afternoon
-        ((16, 19), (1, 2), (3, 2)),  # Late afternoon to early evening
-        ((20, 21), (2, 3), (4, 3)),  # Evening
-        ((22, 23), (3, 4), (5, 4)),  # Late evening
-    ]
+def get_blocks_for_day(day):
+    """Return the tariff block of each hour for the given calendar day."""
+    if isinstance(day, datetime.datetime):
+        day = day.date()
+    schedule = SCHEDULE_FROM_2027 if day >= SCHEDULE_2027_START else SCHEDULE_UNTIL_2026
+    hours = schedule[(is_high_season_month(day.month), is_weekend_or_holiday(day))]
+    return [int(block) for block in hours]
 
-    # Initialize an array to hold the tariffs for each hour of the day
-    blocks = []
+def calculate_tariff(now=None):
+    """Calculate the current tariff and additional attributes for electricity tariff blocks.
 
-    for hour in range(24):  # For each hour from 0 to 23
-        for time_range, high_season_tariff, low_season_tariff in tariffs:
-            start, end = time_range
-            if start <= hour <= end:
-                if is_high_season and not is_holiday:
-                    blocks.append(high_season_tariff[0])
-                elif not is_high_season and is_holiday:
-                    blocks.append(low_season_tariff[0])
-                else:
-                    blocks.append(high_season_tariff[1] if is_high_season else low_season_tariff[1])
-                break
-        else:
-            # Default tariff if none of the conditions above are met
-            blocks.append(0)
+    `now` is the local date and time to calculate for, defaulting to the system clock.
+    """
+    if now is None:
+        now = datetime.datetime.now()
+
+    blocks = get_blocks_for_day(now)
 
     # Get the tariff for the current hour
-    current_tariff = blocks[date.hour]
-    # Get the tariff block for the next hour
-    next_tariff_block = blocks[(date.hour + 1) % 24]
+    current_tariff = blocks[now.hour]
+    # The hour after 23:00 belongs to the next day, which can have different blocks
+    if now.hour == 23:
+        next_tariff_block = get_blocks_for_day(now.date() + datetime.timedelta(days=1))[0]
+    else:
+        next_tariff_block = blocks[now.hour + 1]
     # Determine if the next block is higher than the current
     is_next_block_higher = next_tariff_block > current_tariff
 
     # Return a dictionary with the required attributes
     return {
         "current_tariff": current_tariff,     # Current hour's tariff
-        "is_holiday": is_holiday,             # Is today a holiday or weekend
-        "is_high_season": is_high_season,     # Is high tariff season
+        "is_holiday": is_weekend_or_holiday(now),  # Is today a holiday or weekend
+        "is_high_season": is_high_season_month(now.month),  # Is high tariff season
         "next_tariff_block": next_tariff_block,  # Tariff for the next hour
         "is_next_block_higher": is_next_block_higher,  # Is the next block higher
         "blocks": blocks                      # Tariff blocks for the entire day
